@@ -1,0 +1,28 @@
+; dsh-proxy/exports.def -- the public export names, aliased to our internal implementations.
+;
+; WHY ALIASES AND NOT FORWARDS:
+;   * a forward (Name=Module.Name) needs a BARE module name; a full path to System32 is
+;     treated as an internal alias and produces `unresolved external symbol` for every
+;     entry -- the first attempt failed exactly that way;
+;   * a bare `version.X` would resolve back to THIS file and recurse;
+;   * and defining the real names in C++ clashes with the SDK's own declarations.
+; So the real DLL is loaded by absolute path at run time and every export is forwarded
+; through a function pointer. The names below only attach the required public spellings.
+
+LIBRARY version
+EXPORTS
+    GetFileVersionInfoSizeA=proxy_GetFileVersionInfoSizeA
+    GetFileVersionInfoSizeW=proxy_GetFileVersionInfoSizeW
+    GetFileVersionInfoSizeExA=proxy_GetFileVersionInfoSizeExA
+    GetFileVersionInfoSizeExW=proxy_GetFileVersionInfoSizeExW
+    GetFileVersionInfoA=proxy_GetFileVersionInfoA
+    GetFileVersionInfoW=proxy_GetFileVersionInfoW
+    GetFileVersionInfoExA=proxy_GetFileVersionInfoExA
+    GetFileVersionInfoExW=proxy_GetFileVersionInfoExW
+    GetFileVersionInfoByHandle=proxy_GetFileVersionInfoByHandle
+    VerQueryValueA=proxy_VerQueryValueA
+    VerQueryValueW=proxy_VerQueryValueW
+    VerFindFileA=proxy_VerFindFileA
+    VerFindFileW=proxy_VerFindFileW
+    VerInstallFileA=proxy_VerInstallFileA
+    VerInstallFileW=proxy_VerInstallFileW

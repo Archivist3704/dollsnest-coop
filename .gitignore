@@ -1,0 +1,8 @@
+out/
+**/out/
+build/
+**/build/
+!tools/build/
+*.user
+*.pdb
+
