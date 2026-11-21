@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)][string]$Build,
-    [string]$GameDir = 'Y:\SteamLibrary\steamapps\common\Dolls Nest\DollsNest\Binaries\Win64',
+    [string]$GameDir = '',
     [switch]$SkipPdb
 )
 
@@ -11,6 +11,10 @@ $repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 function Fail($message) {
     Write-Host "[deploy] FAILED: $message"
     exit 1
+}
+
+if ([string]::IsNullOrWhiteSpace($GameDir)) {
+    Fail "-GameDir is required, e.g. -GameDir 'D:\SteamLibrary\steamapps\common\Dolls Nest\DollsNest\Binaries\Win64'"
 }
 
 if ($Build -match '^dollsnest-coop-(v[0-9]+)$') {

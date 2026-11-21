@@ -1,14 +1,15 @@
-# Dolls Nest — co-op mod
+# Dolls Nest Co-op Mod
 
-A peer-to-peer co-op mod for **Dolls Nest**. It lets two (up to four) players see each other's
-machines, shoot together, and share one world: the host's world is the world, and the clients' dolls
-appear in it.
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-The mod is a native DLL plus a small loader. It does not modify any game file, does not need an
-injector, and does not need administrator rights.
+A co-op PvE mod for **Dolls Nest**.
+The mod is a native DLL plus a small loader and a list that is preferred when playing over a virtual LAN.
 
-> **Status:** v685, played and verified on two and three machines (game 1.3.2). The source in this
-> repository is the source of that build.
+> **Status:** v685, tested on 2 and 3 machines (game 1.3.2). This repository is the source of that build.
+>
+> **Licence:** all rights reserved -- **commercial use is not permitted**. See [Licence](#license).
+
+**[Download the latest release](../../releases/latest)**
 
 ---
 
@@ -16,37 +17,38 @@ injector, and does not need administrator rights.
 
 ### Install
 
-1. Unpack the release zip into your Steam library:
+1. Get `DollsNest-coop-v685.zip` from [Releases](../../releases/latest) and extract it into your Steam library:
 
    ```
    <Steam library>\steamapps\common\Dolls Nest\
    ```
 
-   The archive already contains the `DollsNest\Binaries\Win64\` path, so extracting it there puts
-   `version.dll` and `dollsnest-coop.dll` where the game looks for them.
-2. Start the game from Steam as usual. No injector, no launch options.
-3. Check that the game directory now has `dsh-proxy-load.txt` with a recent timestamp, and that
-   `dollsnest-coop.log` starts with `build=` and `file sha256=`.
+   The archive already contains `DollsNest\Binaries\Win64\`, so extracting it there puts `version.dll`,
+   `dollsnest-coop.dll` and `peers.txt` where the game looks for them.
 
-### Play
+2. Start the game from Steam as usual.
 
-1. Both players install a virtual LAN tool (Radmin VPN or similar) and join the same network.
-2. In the game's `Win64` directory, create `peers.txt` with the other player's virtual-LAN address,
-   one per line. Both sides list each other. Without the file the game falls back to LAN broadcast.
-3. The host enters the map first, presses **F7**, and picks the first row.
-4. The client presses **F7** within a few seconds and picks the second row.
-5. Both players must be on the same map. Different maps do not see each other, by design.
+3. Check that `dsh-proxy-load.txt` appears in the game directory, and that **F7** opens the menu in game.
 
-The menu follows the game's language (Simplified Chinese, Traditional Chinese, Japanese, English).
+### Playing together
 
-### Known limits
+1. Both players install Radmin VPN (or a similar virtual LAN tool) and join the same network.
+2. Put every player's virtual LAN address -- your own included -- into `peers.txt`, one per line.
+3. The host, on the map, presses **F7** and hosts.
+4. The client presses **F7** and joins.
+5. Both players must be on the same map -- different maps cannot connect.
+
+### Limits
 
 - Same map only; changing maps ends the session.
-- Resting at a supply point, or dying, ends the session — press F7 again afterwards.
-- When the host ends the session, the client is not told; it has to leave the menu itself.
-- Verified with 2 and 3 players; the 4th slot has never been tested.
-- Use a copy of your save when playing as a client — the game's autosave writes into the save it
-  loaded.
+- Supplying at a rest point, or dying, ends the session -- press **F7** and host or join again.
+- The client is not told when the host ends the session, and has to leave the menu itself.
+- Verified with 2 and 3 players; the 4th has never been tested.
+- The host's boss-cleared state is written into the client's save, so that progress stays in step.
+- Progress itself does not affect the connection, but prefer letting the player who is behind host.
+  If both of you are at the same point it does not matter.
+- The game guards story items and progress carefully, but if you are worried about your save, back it
+  up before playing.
 
 ---
 
@@ -60,8 +62,10 @@ Requirements: Visual Studio 2022/2026 build tools (MSVC 19.5x) and CMake 3.2x+.
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build\build.ps1 -BootstrapName dollsnest-coop-v685
 ```
 
-The output is `out\bin\dollsnest-coop-v685.dll` (plus a `.pdb`). The script exits with code 1 even on
-success; the line to look for is `[build] OK`.
+The output is `out\bin\dollsnest-coop-v685.dll` (plus a `.pdb`). A successful build prints `[build] OK`
+and exits 0; a non-zero exit means the script refused to hand over a DLL -- a missing artifact, a name that
+does not match what was asked for, or a DLL older than its sources. The `[build]` warning just above says
+which.
 
 An offline test suite builds alongside it:
 
@@ -75,7 +79,7 @@ It must print `checks: 734 failures: 0`.
 
 | Path | What it is |
 |---|---|
-| `Code/dsh-bootstrap` | how the DLL gets into the game: the loader, the command channel, the F7 menu, discovery |
+| `Code/dsh-bootstrap` | how the mod gets into the game: the loader, the command channel, the F7 menu, room discovery |
 | `Code/dsh-game` | the session: what is sent, what is built, what is mirrored |
 | `Code/dsh-reflect` | reading and writing the game's actors (the only place that knows the game's field layout) |
 | `Code/dsh-net` | UDP transport, the session handshake, the packet envelope |
@@ -94,7 +98,7 @@ host's world is authoritative; a client reports what happened on its side and th
 
 ### Notes
 
-- `Code/third_party/minhook` is vendored (BSD-3-Clause) — it is the only third-party dependency.
+- `Code/third_party/minhook` is vendored (BSD-2-Clause) -- it is the only third-party dependency.
 - `Code/third_party/layout` is not shipped: the offsets are compiled in and verified at runtime.
 - Two machines must run the same build. The log's first screen prints a `file sha256=`; those have to
   match.
@@ -104,3 +108,31 @@ host's world is authoritative; a client reports what happened on its side and th
 ## Not affiliated
 
 This is a fan-made mod, not endorsed by or affiliated with the game's developers or publishers.
+
+## License
+
+This repository is **not** open source. All rights are reserved by the author, and the list below is the
+whole of what is permitted -- anything not listed is not permitted.
+
+**You may, without asking:**
+
+- read the source and learn from it;
+- build it yourself and play with it, friends included;
+- open issues and send pull requests;
+- show it in videos, streams or articles, with a link back to this repository.
+
+**You may not:**
+
+- **use it commercially in any form** -- selling it, putting it behind a paywall or an ad-gated download,
+  bundling it into a paid pack, or shipping it as part of a paid service or paid support;
+- re-upload or redistribute it (a mirror, a repack, another mod site) without asking first;
+- present it, or a modified copy of it, as your own work.
+
+**Ask first** if you want to redistribute it, bundle it with something else, translate it or port it. For
+non-commercial use the answer is usually yes -- I would just like to know where it ends up.
+
+This is a statement of permission, not an open-source licence, and it grants nothing regarding the game
+itself: the game, its name and its assets belong to their owners.
+
+`Code/third_party/minhook` is a separate matter -- it is vendored under BSD-2-Clause; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

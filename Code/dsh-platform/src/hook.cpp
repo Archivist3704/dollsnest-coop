@@ -51,7 +51,7 @@ bool hooks_initialize() {
     if (!hooks_available()) {
         DSH_FATAL("hooking UNAVAILABLE: this build was compiled without MinHook. "
                   "Consequence: no ProcessEvent interception, so no gameplay event "
-                  "capture or replay is possible. Fix: run tools/fetch-deps.ps1 and rebuild.");
+                  "capture or replay is possible. Fix: restore Code/third_party/minhook and rebuild.");
         return false;
     }
 #if defined(DSH_HAVE_MINHOOK)

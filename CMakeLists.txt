@@ -46,8 +46,7 @@ if(EXISTS "${DSH_THIRD_PARTY}/minhook/CMakeLists.txt")
 else()
     set(DSH_HAVE_MINHOOK OFF)
     message(WARNING
-        "MinHook not found at ${DSH_THIRD_PARTY}/minhook -- hooking will be compiled out.\n"
-        "Run tools/fetch-deps.ps1 to fetch it.")
+        "MinHook not found at ${DSH_THIRD_PARTY}/minhook -- hooking will be compiled out.")
 endif()
 
 set(DSH_LAYOUT_DIR "${DSH_THIRD_PARTY}/layout" CACHE PATH "optional layout headers (not shipped)")

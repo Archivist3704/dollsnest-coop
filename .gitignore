@@ -1,3 +1,4 @@
+# 构建产物
 out/
 **/out/
 build/
@@ -6,3 +7,14 @@ build/
 *.user
 *.pdb
 
+# 联机时在本地生成：里面是真实的虚拟局域网地址，不要提交
+peers.txt
+*.log
+dsh-proxy-load.txt
+dsh-commands.txt
+
+# 发布包：走 GitHub Releases，不进仓库
+dist/
+
+# 游戏 SDK 导出的布局头（README 里说明不发布）
+Code/third_party/layout/

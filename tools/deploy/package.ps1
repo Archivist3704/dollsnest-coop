@@ -22,10 +22,14 @@ $sourceName = 'dollsnest-coop-' + $Build
 $sourceDll = Join-Path $repo ('out\bin\' + $sourceName + '.dll')
 $proxy = Join-Path $repo 'out\bin\version.dll'
 $readme = Join-Path $PSScriptRoot 'README-players.txt'
+$minhookLicense = Join-Path $repo 'Code\third_party\minhook\LICENSE.txt'
+$peersTemplate = Join-Path $PSScriptRoot 'peers-template.txt'
 
 if (-not (Test-Path $sourceDll)) { Fail "no such build: $sourceDll" }
 if (-not (Test-Path $proxy)) { Fail "no proxy at $proxy" }
 if (-not (Test-Path $readme)) { Fail "no player README at $readme" }
+if (-not (Test-Path $minhookLicense)) { Fail "no third-party licence at $minhookLicense (BSD-2 asks for the notice in the binary zip)" }
+if (-not (Test-Path $peersTemplate)) { Fail "no peers.txt template at $peersTemplate" }
 
 if ($OutDir -eq '') {
     $OutDir = Join-Path $repo 'out\package'
@@ -39,6 +43,8 @@ New-Item -ItemType Directory -Force -Path $win64 | Out-Null
 Copy-Item $proxy (Join-Path $win64 'version.dll') -Force
 Copy-Item $sourceDll (Join-Path $win64 'dollsnest-coop.dll') -Force
 Copy-Item $readme (Join-Path $win64 'README.txt') -Force
+Copy-Item $minhookLicense (Join-Path $win64 'THIRD_PARTY_NOTICES.txt') -Force
+Copy-Item $peersTemplate (Join-Path $win64 'peers.txt') -Force
 
 $zip = Join-Path $OutDir ('DollsNest-coop-' + $Build + '.zip')
 if (Test-Path $zip) { Remove-Item $zip -Force }
@@ -53,7 +59,7 @@ Write-Host "[package] members (extract into ...\steamapps\common\Dolls Nest\):"
 $members = Get-ChildItem $win64 -File | Sort-Object Name
 foreach ($file in $members) {
     $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash
-    Write-Host ("  DollsNest\Binaries\Win64\{0,-20} {1,10} bytes  {2}" -f $file.Name, $file.Length, $hash)
+    Write-Host ("  DollsNest\Binaries\Win64\{0,-24} {1,10} bytes  {2}" -f $file.Name, $file.Length, $hash)
 }
 
 $zipItem = Get-Item $zip
